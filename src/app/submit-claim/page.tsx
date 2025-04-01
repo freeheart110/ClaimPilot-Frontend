@@ -9,8 +9,9 @@ import FormField from '@/components/FormField';
 // Define enums based on backend models
 enum ClaimType {
   AUTO = 'AUTO',
-  COMMERCIAL = 'COMMERCIAL',
-  INJURY = 'INJURY',
+  HOME = 'HOME',
+  HEALTH = 'HEALTH',
+  TRAVEL = 'TRAVEL'
 }
 
 // Form schema with Zod validation
@@ -45,13 +46,55 @@ export default function SubmitClaim() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
-    const submissionData = {
-      ...data,
-      claimDate: new Date().toISOString().split('T')[0],
-      status: 'SUBMITTED',
+  const onSubmit = async (data: FormData) => {
+    console.log("Form submitted:", data);
+    const payload = {
+      claimType: data.claimType,
+      claimDate: new Date().toISOString().split("T")[0],
+      dateOfAccident: data.dateOfAccident,
+      status: "SUBMITTED",
+      accidentDescription: data.accidentDescription,
+      policeReportNumber: data.policeReportNumber,
+      locationOfAccident: data.locationOfAccident,
+      damageDescription: data.damageDescription,
+      estimatedRepairCost: data.estimatedRepairCost || 0,
+      policyHolder: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        city: data.city,
+        province: data.province,
+        postalCode: data.postalCode,
+        driverLicenseNumber: data.driverLicenseNumber,
+        vehicleVIN: data.vehicleVIN,
+      },
     };
-    console.log(submissionData);
+  
+    try {
+      const response = await fetch("http://localhost:8080/api/claims", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Server error: ${errText}`);
+      }
+  
+      const result = await response.json();
+      console.log("Claim submitted successfully:", result);
+      alert("Claim submitted successfully!");
+  
+      // Optionally reset form or redirect
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Failed to submit claim.");
+    }
   };
 
   return (
@@ -112,8 +155,9 @@ export default function SubmitClaim() {
                 <select {...register('claimType')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                   <option value="">Select Claim Type</option>
                   <option value={ClaimType.AUTO}>Auto</option>
-                  <option value={ClaimType.COMMERCIAL}>Commercial</option>
-                  <option value={ClaimType.INJURY}>Injury</option>
+                  <option value={ClaimType.HOME}>Home</option>
+                  <option value={ClaimType.HEALTH}>Health</option>
+                  <option value={ClaimType.TRAVEL}>Travel</option>
                 </select>
               </FormField>
               <FormField label="Date of Accident" error={errors.dateOfAccident?.message}>
