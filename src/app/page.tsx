@@ -65,11 +65,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-100 dark:bg-gray-900 py-4 text-center text-gray-500 dark:text-gray-400">
-        <p>&copy; 2025 ClaimPilot. All rights reserved.</p>
-      </footer>
     </div>
   );
 }
