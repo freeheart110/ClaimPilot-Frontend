@@ -8,7 +8,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-20 text-center">
         <h1 className="text-5xl font-bold mb-4">Welcome to ClaimPilot</h1>
-        <p className="text-xl mb-8">Simplify your claims process with our intuitive platform</p>
+        <p className="text-xl mb-8">Your trusted platform to file, track, and manage insurance claims seamlessly.</p>
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
           <Link
             href="/submit-claim"
@@ -68,7 +68,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-gray-100 dark:bg-gray-900 py-4 text-center text-gray-500 dark:text-gray-400">
-        <p>&copy; 2023 ClaimPilot. All rights reserved.</p>
+        <p>&copy; 2025 ClaimPilot. All rights reserved.</p>
       </footer>
     </div>
   );
