@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
@@ -51,8 +51,8 @@ export default function SubmitClaim() {
                     <TextInput label="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <TextInput label="Policy Number" value={policyNumber} onChange={(e) => setPolicyNumber(e.target.value)} />
                     <Dropdown label="Type of Claim" value={claimType} onChange={(e) => setClaimType(e.target.value)} options={claimTypes} />
-                    <DatePickerWrapper label="Date of Incident" selected={dateOfIncident} onChange={setDateOfIncident} />
-                    <DragDropUpload label="Description" onDrop={(files) => setFile(files[0])} />
+                    <DatePickerWrapper label="Date of Incident" selected={dateOfIncident} onChangeAction={setDateOfIncident} />
+                    <DragDropUpload label="Description" onDropAction={(files) => setFile(files[0])} />
                     <div className="text-center">
                         <Button>Submit Claim</Button>
                     </div>
