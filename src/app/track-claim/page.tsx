@@ -34,7 +34,6 @@ export default function TrackClaim() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -64,8 +63,12 @@ export default function TrackClaim() {
       }
       const result = await response.text();
       setStatus(`Claim Status: ${result}`);
-    } catch (error: any) {
-      setStatus(error.message || 'Failed to fetch claim status.');
+    } catch (error) {
+      if (error instanceof Error) {
+        setStatus(error.message);
+      } else {
+        setStatus('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
