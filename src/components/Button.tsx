@@ -1,10 +1,23 @@
-import { ReactNode } from "react";
+import React from "react";
 
-const Button = ({ children }: { children: ReactNode }) => {
-    return (
-        <div className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
-            {children}
-        </div>
-    )
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  variant?: "primary" | "secondary";
 }
-export default Button
+
+const Button = ({ children, variant = "primary", ...props }: ButtonProps) => {
+  const baseStyle =
+    "px-6 py-3 rounded-lg transition-colors duration-200 font-medium";
+  const variants = {
+    primary: "bg-primary text-white hover:bg-primary-dark",
+    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
+  };
+
+  return (
+    <button className={`${baseStyle} ${variants[variant]}`} {...props}>
+      {children}
+    </button>
+  );
+};
+
+export default Button;

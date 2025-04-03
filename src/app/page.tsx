@@ -17,10 +17,10 @@ export default function Home() {
             Submit a Claim
           </Link>
           <Link
-            href="/my-claims"
+            href="/track-claim"
             className="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors duration-200"
           >
-            Track My Claims
+            Track Claims
           </Link>
         </div>
       </section>

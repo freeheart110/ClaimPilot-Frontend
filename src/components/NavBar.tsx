@@ -49,7 +49,7 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
         {/* Desktop Nav Links */}
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium">
           <Link href="/submit-claim" className="hover:text-primary">Submit Claim</Link>
-          <Link href="/my-claims" className="hover:text-primary">My Claims</Link>
+          <Link href="/track-claim" className="hover:text-primary">Track Claims</Link>
           <Link href="/contact" className="hover:text-primary">Contact</Link>
         </div>
 
@@ -72,7 +72,7 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
         <div className="md:hidden bg-white border-t shadow-sm">
           <div className="flex flex-col px-4 py-2 space-y-2 text-gray-700">
             <Link href="/submit-claim" onClick={toggleMobileMenu}>Submit Claim</Link>
-            <Link href="/my-claims" onClick={toggleMobileMenu}>My Claims</Link>
+            <Link href="/track-claim" onClick={toggleMobileMenu}>Track Claim</Link>
             <Link href="/contact" onClick={toggleMobileMenu}>Contact</Link>
             <hr />
             <Link href="/login" onClick={toggleMobileMenu}>Login</Link>

@@ -8,10 +8,10 @@ import FormField from '@/components/FormField';
 
 // Define enums based on backend models
 enum ClaimType {
-  AUTO = 'AUTO',
-  HOME = 'HOME',
-  HEALTH = 'HEALTH',
-  TRAVEL = 'TRAVEL'
+  COLLISION = 'COLLISION',
+  THEFT = 'THEFT',
+  VANDALISM = 'VANDALISM',
+  DISASTER = 'DISASTER'
 }
 
 // Form schema with Zod validation
@@ -32,7 +32,6 @@ const schema = z.object({
   policeReportNumber: z.string().optional(),
   locationOfAccident: z.string().optional(),
   damageDescription: z.string().optional(),
-  estimatedRepairCost: z.number().min(0, 'Cost must be positive').optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -46,7 +45,7 @@ export default function SubmitClaim() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormData) => {  //try user action later
     console.log("Form submitted:", data);
     const payload = {
       claimType: data.claimType,
@@ -57,7 +56,6 @@ export default function SubmitClaim() {
       policeReportNumber: data.policeReportNumber,
       locationOfAccident: data.locationOfAccident,
       damageDescription: data.damageDescription,
-      estimatedRepairCost: data.estimatedRepairCost || 0,
       policyHolder: {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -154,10 +152,10 @@ export default function SubmitClaim() {
               <FormField label="Claim Type" error={errors.claimType?.message}>
                 <select {...register('claimType')} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                   <option value="">Select Claim Type</option>
-                  <option value={ClaimType.AUTO}>Auto</option>
-                  <option value={ClaimType.HOME}>Home</option>
-                  <option value={ClaimType.HEALTH}>Health</option>
-                  <option value={ClaimType.TRAVEL}>Travel</option>
+                  <option value={ClaimType.COLLISION}>Collision</option>
+                  <option value={ClaimType.THEFT}>Theft</option>
+                  <option value={ClaimType.VANDALISM}>Vandalism</option>
+                  <option value={ClaimType.DISASTER}>Disaster</option>
                 </select>
               </FormField>
               <FormField label="Date of Accident" error={errors.dateOfAccident?.message}>
@@ -179,15 +177,6 @@ export default function SubmitClaim() {
                   <textarea rows={4} {...register('damageDescription')} placeholder="Describe the damage" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
                 </FormField>
               </div>
-              <FormField label="Estimated Repair Cost" error={errors.estimatedRepairCost?.message}>
-                <input
-                  type="number"
-                  step="0.01"
-                  {...register('estimatedRepairCost', { valueAsNumber: true })}
-                  placeholder="Estimated Repair Cost"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </FormField>
             </div>
           </section>
 
