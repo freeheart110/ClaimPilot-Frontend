@@ -71,7 +71,7 @@ export default function SubmitClaim() {
     };
   
     try {
-      const response = await fetch("http://localhost:8080/api/claims", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/claims`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
