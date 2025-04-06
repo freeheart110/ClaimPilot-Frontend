@@ -34,8 +34,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchClaims = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/claims`, {
-          credentials: 'include', // 🔐 sends the session cookie (JSESSIONID)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims`, {
+          credentials: 'include', // sends the session cookie (JSESSIONID)
         });
         if (!response.ok) throw new Error('Failed to fetch claims');
         const data: Claim[] = await response.json();

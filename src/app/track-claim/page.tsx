@@ -55,7 +55,7 @@ export default function TrackClaim() {
 
       // Fetch claim status from backend
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/claims/status?${queryParams.toString()}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/status?${queryParams.toString()}`
       );
       if (!response.ok) {
         const errText = await response.text();

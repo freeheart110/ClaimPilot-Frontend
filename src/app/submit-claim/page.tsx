@@ -71,7 +71,7 @@ export default function SubmitClaim() {
     };
   
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/claims`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
