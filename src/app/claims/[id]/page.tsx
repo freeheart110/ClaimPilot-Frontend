@@ -101,7 +101,9 @@ export default function ClaimDetailsPage() {
   useEffect(() => {
     const fetchClaim = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/claims/${id}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/claims/${id}`, {
+          credentials: 'include', // 🔐 sends the session cookie (JSESSIONID)
+        });
         if (!response.ok) throw new Error("Failed to fetch claim");
         const data: Claim = await response.json();
         setClaim(data);

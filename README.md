@@ -1,4 +1,19 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+User admin = User.builder()
+.firstName("Alice")
+.lastName("Admin")
+.email("admin@claimpilot.com")
+.password(passwordEncoder.encode("admin123"))
+.role(Role.ADMIN)
+.build();
+
+      User adjuster = User.builder()
+          .firstName("Bob")
+          .lastName("Adjuster")
+          .email("adjuster@claimpilot.com")
+          .password(passwordEncoder.encode("adjuster123"))
+          .role(Role.ADJUSTER)
+          .build();
 
 ## Getting Started
 
