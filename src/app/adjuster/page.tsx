@@ -186,7 +186,7 @@ function ClaimRow({ claim, onUpdate, updating }: ClaimRowProps) {
   return (
     <tr className="border-t border-gray-200 dark:border-gray-700">
       <td className="p-4 font-medium text-primary underline">
-        <Link href={`/admin/claims/${claim.id}`}>
+        <Link href={`/claims/${claim.id}`}>
           {claim.claimNumber}
         </Link>
       </td>
