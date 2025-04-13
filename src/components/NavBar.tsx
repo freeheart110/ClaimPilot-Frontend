@@ -11,26 +11,51 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const prevScroll = useRef(0);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  // Add scroll event listener
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`, {
+          credentials: 'include',
+        });
+        setIsLoggedIn(res.ok);
+      } catch (err) {
+        console.error('Session check failed:', err);
+      }
+    };
+
+    checkSession();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      setIsLoggedIn(false);
+      window.location.href = '/';
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       if (currentScroll > prevScroll.current) {
-        // Scrolling down
         setIsVisible(false);
       } else {
-        // Scrolling up
         setIsVisible(true);
       }
       prevScroll.current = currentScroll;
     };
 
     window.addEventListener('scroll', handleScroll);
-    // Cleanup listener on component unmount
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -41,25 +66,32 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
       }`}
     >
       <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo */}
         <Link href="/" className="text-xl font-bold text-primary">
           ClaimPilot
         </Link>
 
-        {/* Desktop Nav Links */}
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium">
           <Link href="/submit-claim" className="hover:text-primary">Submit Claim</Link>
           <Link href="/track-claim" className="hover:text-primary">Track Claims</Link>
           <Link href="/contact" className="hover:text-primary">Contact</Link>
         </div>
 
-        {/* User Actions */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/login" className="text-sm text-gray-600 hover:text-primary">Login</Link>
-          <Link href="/signup" className="bg-primary text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">Sign Up</Link>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="text-sm text-gray-600 hover:text-red-600"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm text-gray-600 hover:text-primary">Login</Link>
+              <Link href="/signup" className="bg-primary text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">Sign Up</Link>
+            </>
+          )}
         </div>
 
-        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
           <button onClick={toggleMobileMenu}>
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -67,7 +99,6 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
         </div>
       </nav>
 
-      {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t shadow-sm">
           <div className="flex flex-col px-4 py-2 space-y-2 text-gray-700">
@@ -75,13 +106,20 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
             <Link href="/track-claim" onClick={toggleMobileMenu}>Track Claim</Link>
             <Link href="/contact" onClick={toggleMobileMenu}>Contact</Link>
             <hr />
-            <Link href="/login" onClick={toggleMobileMenu}>Login</Link>
-            <Link href="/signup" onClick={toggleMobileMenu}>Sign Up</Link>
+            {isLoggedIn ? (
+              <button onClick={() => { handleLogout(); toggleMobileMenu(); }} className="text-left text-sm text-red-600">
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link href="/login" onClick={toggleMobileMenu}>Login</Link>
+                <Link href="/signup" onClick={toggleMobileMenu}>Sign Up</Link>
+              </>
+            )}
           </div>
         </div>
       )}
 
-      {/* Optional slot content */}
       {children}
     </header>
   );

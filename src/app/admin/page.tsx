@@ -57,9 +57,9 @@ export default function AdminClaimsPage() {
     fetchData();
   }, []);
 
-  const handleAssign = async (claimId: number, adjusterId: number) => {
+  const handleAssign = async (id: number, adjusterId: number) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/${claimId}/assign`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/${id}/assign`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adjusterId }),
@@ -70,7 +70,7 @@ export default function AdminClaimsPage() {
 
       const updatedClaim: Claim = await response.json();
       setClaims((prev) =>
-        prev.map((claim) => (claim.id === claimId ? updatedClaim : claim))
+        prev.map((claim) => (claim.id === id ? updatedClaim : claim))
       );
       alert('Adjuster assigned successfully!');
     } catch (err) {
@@ -93,7 +93,8 @@ export default function AdminClaimsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Admin Claims</h1>
+        <h1 className="text-3xl font-bold text-center mb-4">Admin Page</h1>
+        <h2 className="text-2xl text-center mb-4">Claims</h2>
 
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div>

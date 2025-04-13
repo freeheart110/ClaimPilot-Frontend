@@ -61,10 +61,11 @@ export default function AdminDashboard() {
 
     try {
       setUpdating(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/claims/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+        credentials: 'include'
       });
 
       if (!response.ok) {

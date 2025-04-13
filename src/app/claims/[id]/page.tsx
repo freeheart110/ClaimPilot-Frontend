@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Button from "@/components/Button";
+import FormField from "@/components/FormField"
 
 type ClaimStatus =
   | "SUBMITTED"
@@ -143,6 +144,7 @@ export default function ClaimDetailsPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -222,8 +224,119 @@ export default function ClaimDetailsPage() {
             </div>
           </div>
         ) : (
-          // You already have the edit form, so it stays the same.
-          <form onSubmit={handleSubmit(onSubmit)}>{/* ... */}</form>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            {/* Claim Details Section */}
+            <section className="bg-white shadow-sm rounded-lg p-6">
+              <h2 className="text-2xl font-semibold mb-4">Claim Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField label="Claim Number" error={errors.claimNumber?.message}>
+                  <input
+                    {...register("claimNumber")}
+                    readOnly
+                    className="w-full p-2 border rounded bg-gray-100"
+                  />
+                </FormField>
+                <FormField label="Claim Type" error={errors.claimType?.message}>
+                  <select {...register("claimType")} className="w-full p-2 border rounded">
+                    <option value="COLLISION">Collision</option>
+                    <option value="THEFT">Theft</option>
+                    <option value="VANDALISM">Vandalism</option>
+                    <option value="DISASTER">Disaster</option>
+                  </select>
+                </FormField>
+                <FormField label="Status" error={errors.status?.message}>
+                  <select {...register("status")} className="w-full p-2 border rounded">
+                    <option value="SUBMITTED">Submitted</option>
+                    <option value="IN_REVIEW">In Review</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="REJECTED">Rejected</option>
+                    <option value="PENDING_INFO">Pending Info</option>
+                    <option value="UNDER_INVESTIGATION">Under Investigation</option>
+                    <option value="PAID">Paid</option>
+                    <option value="CLOSED">Closed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                  </select>
+                </FormField>
+                <FormField label="Claim Date" error={errors.claimDate?.message}>
+                  <input
+                    type="date"
+                    {...register("claimDate")}
+                    className="w-full p-2 border rounded"
+                  />
+                </FormField>
+                <FormField label="Date of Accident" error={errors.dateOfAccident?.message}>
+                  <input
+                    type="date"
+                    {...register("dateOfAccident")}
+                    className="w-full p-2 border rounded"
+                  />
+                </FormField>
+                <div className="md:col-span-2">
+                  <FormField label="Accident Description" error={errors.accidentDescription?.message}>
+                    <textarea {...register("accidentDescription")} className="w-full p-2 border rounded" rows={3} />
+                  </FormField>
+                </div>
+                <FormField label="Police Report Number" error={errors.policeReportNumber?.message}>
+                  <input {...register("policeReportNumber")} className="w-full p-2 border rounded" />
+                </FormField>
+                <FormField label="Location of Accident" error={errors.locationOfAccident?.message}>
+                  <input {...register("locationOfAccident")} className="w-full p-2 border rounded" />
+                </FormField>
+                <div className="md:col-span-2">
+                  <FormField label="Damage Description" error={errors.damageDescription?.message}>
+                    <textarea {...register("damageDescription")} className="w-full p-2 border rounded" rows={3} />
+                  </FormField>
+                </div>
+                <FormField label="Estimated Repair Cost" error={errors.estimatedRepairCost?.message}>
+                  <input
+                    type="number"
+                    step="0.01"
+                    {...register("estimatedRepairCost", { valueAsNumber: true })}
+                    className="w-full p-2 border rounded"
+                  />
+                </FormField>
+                <FormField label="Final Settlement Amount" error={errors.finalSettlementAmount?.message}>
+                  <input
+                    type="number"
+                    step="0.01"
+                    {...register("finalSettlementAmount", { valueAsNumber: true })}
+                    className="w-full p-2 border rounded"
+                  />
+                </FormField>
+              </div>
+            </section>
+
+            {/* Form Buttons */}
+            <div className="flex justify-center space-x-4">
+              <Button type="submit" variant="primary">
+                Save
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  if (claim) {
+                    reset({
+                      claimNumber: claim.claimNumber,
+                      claimType: claim.claimType,
+                      status: claim.status,
+                      claimDate: claim.claimDate,
+                      dateOfAccident: claim.dateOfAccident,
+                      accidentDescription: claim.accidentDescription,
+                      policeReportNumber: claim.policeReportNumber ?? undefined,
+                      locationOfAccident: claim.locationOfAccident ?? undefined,
+                      damageDescription: claim.damageDescription ?? undefined,
+                      estimatedRepairCost: claim.estimatedRepairCost ?? undefined,
+                      finalSettlementAmount: claim.finalSettlementAmount ?? undefined,
+                    });
+                  }
+                  setMode("view");
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
         )}
       </div>
     </main>
