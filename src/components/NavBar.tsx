@@ -22,12 +22,19 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`, {
           credentials: 'include',
         });
-        setIsLoggedIn(res.ok);
+        if (res.status === 401) {
+          setIsLoggedIn(false); // not logged in
+        } else if (res.ok) {
+          setIsLoggedIn(true);
+        } else {
+          console.error('Unexpected auth response:', res.status);
+        }
+  
       } catch (err) {
-        console.error('Session check failed:', err);
+        console.error('Network error checking session:', err);
       }
     };
-
+  
     checkSession();
   }, []);
 
@@ -86,8 +93,7 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
             </button>
           ) : (
             <>
-              <Link href="/login" className="text-sm text-gray-600 hover:text-primary">Login</Link>
-              <Link href="/signup" className="bg-primary text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">Sign Up</Link>
+              <Link href="/login" className="bg-primary text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">Login</Link>
             </>
           )}
         </div>

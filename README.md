@@ -4,16 +4,17 @@ User admin = User.builder()
 .lastName("Admin")
 .email("admin@claimpilot.com")
 .password(passwordEncoder.encode("admin123"))
-.role(Role.ADMIN)
+('james.bond@claimpilot.com', 'James', 'Bond', 'adjuster123', 'ADJUSTER'),
+('clark.kent@claimpilot.com', 'Clark', 'Kent', 'adjuster123', 'ADJUSTER'),
+('diana.prince@claimpilot.com', 'Diana', 'Prince', 'adjuster123', 'ADJUSTER'),
+('tony.stark@claimpilot.com', 'Tony', 'Stark', 'adjuster123', 'ADJUSTER');
+User adjuster = User.builder()
+.firstName("Bob")
+.lastName("Adjuster")
+.email("adjuster@claimpilot.com")
+.password(passwordEncoder.encode("adjuster123"))
+.role(Role.ADJUSTER)
 .build();
-
-      User adjuster = User.builder()
-          .firstName("Bob")
-          .lastName("Adjuster")
-          .email("adjuster@claimpilot.com")
-          .password(passwordEncoder.encode("adjuster123"))
-          .role(Role.ADJUSTER)
-          .build();
 
 ## Getting Started
 

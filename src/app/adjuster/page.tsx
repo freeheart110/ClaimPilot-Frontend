@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 // Zod validation schema
 const updateSchema = z.object({
@@ -23,19 +24,28 @@ interface Claim {
   finalSettlementAmount: number;
 }
 
-export default function AdminDashboard() {
+export default function AdjusterDashboard() {
   const [claims, setClaims] = useState<Claim[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
+  const router = useRouter();
 
   useEffect(() => {
     const fetchClaims = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims`, {
-          credentials: 'include', // sends the session cookie (JSESSIONID)
+        const profileRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`, {
+          credentials: 'include',
+        });
+        if (!profileRes.ok) {
+          router.push('/login');
+          return;
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/assigned`, {
+          credentials: 'include',
         });
         if (!response.ok) throw new Error('Failed to fetch claims');
         const data: Claim[] = await response.json();
@@ -48,47 +58,32 @@ export default function AdminDashboard() {
     };
 
     fetchClaims();
-  }, []);
+  }, [router]);
 
   const handleUpdate = async (
     id: number,
     data: { status?: string; estimatedRepairCost?: number; finalSettlementAmount?: number }
   ) => {
-    if (!id) {
-      alert('Invalid claim ID');
-      return;
-    }
-
     try {
       setUpdating(true);
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-        credentials: 'include'
+        credentials: 'include',
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Failed to update claim');
-      }
-
+      if (!response.ok) throw new Error('Failed to update claim');
       const updatedClaim: Claim = await response.json();
-      setClaims((prev) =>
-        prev.map((claim) => (claim.id === id ? updatedClaim : claim))
-      );
-
+      setClaims((prev) => prev.map((c) => (c.id === id ? updatedClaim : c)));
       setSuccessMessage(`Claim ${updatedClaim.claimNumber} updated successfully.`);
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
-      alert(`Error: ${(err as Error).message}`);
+      alert((err as Error).message);
     } finally {
       setUpdating(false);
     }
   };
-
-  if (loading) return <p className="text-center">Loading...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   const filteredClaims = claims
     .filter((claim) => filterStatus === 'ALL' || claim.status === filterStatus)
@@ -97,7 +92,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-center mb-8">Adjuster Dashboard</h1>
 
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div>
@@ -174,22 +169,18 @@ function ClaimRow({ claim, onUpdate, updating }: ClaimRowProps) {
   });
 
   const onSubmit = (data: z.infer<typeof updateSchema>) => {
-    const updateData = {
+    onUpdate(claim.id, {
       status: data.status,
       estimatedRepairCost: data.estimatedAmount,
       finalSettlementAmount: data.finalAmount,
-    };
-
-    onUpdate(claim.id, updateData);
+    });
     reset(data);
   };
 
   return (
     <tr className="border-t border-gray-200 dark:border-gray-700">
       <td className="p-4 font-medium text-primary underline">
-        <Link href={`/claims/${claim.id}`}>
-          {claim.claimNumber}
-        </Link>
+        <Link href={`/claims/${claim.id}`}>{claim.claimNumber}</Link>
       </td>
       <td className="p-4">{new Date(claim.claimDate).toLocaleDateString()}</td>
       <td className="p-4">

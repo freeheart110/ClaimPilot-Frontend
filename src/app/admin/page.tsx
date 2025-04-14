@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@/components/Button';
 import Link from 'next/link';
 
-// Interfaces
 interface Claim {
   id: number;
   claimNumber: string;
@@ -22,12 +22,12 @@ interface Adjuster {
   lastName: string;
 }
 
-// Zod validation
 const assignSchema = z.object({
   adjusterId: z.number().min(1, 'Please select an adjuster'),
 });
 
 export default function AdminClaimsPage() {
+  const router = useRouter();
   const [claims, setClaims] = useState<Claim[]>([]);
   const [adjusters, setAdjusters] = useState<Adjuster[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +37,9 @@ export default function AdminClaimsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const authRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`, { credentials: 'include' });
+        if (!authRes.ok) return router.push('/login');
+
         const [claimsRes, adjustersRes] = await Promise.all([
           fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims`, { credentials: 'include' }),
           fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/adjusters`, { credentials: 'include' }),
@@ -55,7 +58,7 @@ export default function AdminClaimsPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [router]);
 
   const handleAssign = async (id: number, adjusterId: number) => {
     try {
@@ -65,13 +68,10 @@ export default function AdminClaimsPage() {
         body: JSON.stringify({ adjusterId }),
         credentials: 'include',
       });
-
       if (!response.ok) throw new Error('Failed to assign adjuster');
 
       const updatedClaim: Claim = await response.json();
-      setClaims((prev) =>
-        prev.map((claim) => (claim.id === id ? updatedClaim : claim))
-      );
+      setClaims((prev) => prev.map((claim) => (claim.id === id ? updatedClaim : claim)));
       alert('Adjuster assigned successfully!');
     } catch (err) {
       alert(`Error: ${(err as Error).message}`);
@@ -80,7 +80,7 @@ export default function AdminClaimsPage() {
 
   const statuses = [
     'SUBMITTED', 'IN_REVIEW', 'APPROVED', 'REJECTED',
-    'PENDING_INFO', 'UNDER_INVESTIGATION', 'PAID', 'CLOSED', 'CANCELLED'
+    'PENDING_INFO', 'UNDER_INVESTIGATION', 'PAID', 'CLOSED', 'CANCELLED',
   ];
 
   const filteredClaims = claims
@@ -96,29 +96,27 @@ export default function AdminClaimsPage() {
         <h1 className="text-3xl font-bold text-center mb-4">Admin Page</h1>
         <h2 className="text-2xl text-center mb-4">Claims</h2>
 
-        <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div>
-            <label className="text-sm font-medium mr-2">Filter by Status:</label>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="rounded-md border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            >
-              <option value="ALL">All</option>
-              {statuses.map((status) => (
-                <option key={status} value={status}>{status}</option>
-              ))}
-            </select>
-          </div>
+        <div className="mb-6 flex flex-col sm:flex-row items-center gap-4">
+          <label className="text-sm font-medium mr-2">Filter by Status:</label>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="rounded-md border-gray-300 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            <option value="ALL">All</option>
+            {statuses.map((status) => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
         </div>
 
         <table className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
           <thead>
             <tr className="text-left text-gray-500 dark:text-gray-400">
               <th className="p-4">Claim Number</th>
-              <th className="p-4">Assigned Adjuster</th>
+              <th className="p-4">Adjuster</th>
               <th className="p-4">Status</th>
-              <th className="p-4">Date</th>
+              <th className="p-4">Submit Date</th>
               <th className="p-4">Actions</th>
             </tr>
           </thead>
@@ -147,9 +145,7 @@ interface ClaimRowProps {
 function ClaimRow({ claim, adjusters, onAssign }: ClaimRowProps) {
   const { register, handleSubmit } = useForm({
     resolver: zodResolver(assignSchema),
-    defaultValues: {
-      adjusterId: claim.assignedAdjuster?.id || 0,
-    },
+    defaultValues: { adjusterId: claim.assignedAdjuster?.id || 0 },
   });
 
   const [mode, setMode] = useState<'none' | 'assignAdjuster'>('none');
