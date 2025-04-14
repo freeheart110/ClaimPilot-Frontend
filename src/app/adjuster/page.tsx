@@ -26,8 +26,6 @@ interface Claim {
 
 export default function AdjusterDashboard() {
   const [claims, setClaims] = useState<Claim[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
@@ -50,10 +48,8 @@ export default function AdjusterDashboard() {
         if (!response.ok) throw new Error('Failed to fetch claims');
         const data: Claim[] = await response.json();
         setClaims(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
+      } catch {
+        router.push('/login');
       }
     };
 
