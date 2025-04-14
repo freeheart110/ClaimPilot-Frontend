@@ -10,6 +10,8 @@ export default function Home() {
       {/* Hero Section */}
       <section className="flex flex-col justify-center items-center text-center min-h-[30vh] px-4 pt-16">
         <h1 className="text-4xl font-bold mb-3">Welcome to ClaimPilot</h1>
+        <p className="text-lg">Admin: email: admin@claimpilot.com; password: admin123</p>
+        <p className="text-lg">Adjuster: email: adjuster@claimpilot.com; password: adjuster123</p>
         <p className="text-lg mb-6">Your trusted platform to file, track, and manage insurance claims seamlessly.</p>
         <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
           <Link
