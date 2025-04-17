@@ -189,11 +189,13 @@ function ClaimRow({ claim, adjusters, onAssign }: ClaimRowProps) {
             onChange={(e) => {
               if (e.target.value === 'assign') setMode('assignAdjuster');
               else if (e.target.value === 'view') window.location.href = `/claims/${claim.id}`;
+              else if (e.target.value === 'audit') window.location.href = `/claims/${claim.id}/audit`;
             }}
           >
             <option value="" disabled>Choose an action</option>
             <option value="assign">Assign Adjuster</option>
             <option value="view">View Details</option>
+            <option value="audit">Audit Trail</option>
           </select>
         ) : (
           <Button type="submit" onClick={handleSubmit(onSubmit)}>Save</Button>
