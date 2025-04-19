@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
+import { useAuth } from '@/lib/authContext'; // Import useAuth hook
 
 const LoginPage = () => {
   const router = useRouter();
+  const { checkSession } = useAuth(); // Access checkSession from context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -30,6 +32,9 @@ const LoginPage = () => {
         return;
       }
 
+      // Refresh the global auth state after successful login
+      await checkSession();
+
       // Check who just logged in
       const profileRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`, {
         method: 'GET',
@@ -46,7 +51,7 @@ const LoginPage = () => {
           router.push('/');
         }
       } else {
-        setError("Unable to retrieve user profile.");
+        setError('Unable to retrieve user profile.');
       }
     } catch (err) {
       console.error('Login error:', err);
@@ -67,7 +72,9 @@ const LoginPage = () => {
         {error && <p className="text-red-600 mb-4 text-sm text-center">{error}</p>}
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
+          <label className="block text-sm font-medium mb-1" htmlFor="email">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -81,7 +88,9 @@ const LoginPage = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+          <label className="block text-sm font-medium mb-1" htmlFor="password">
+            Password
+          </label>
           <input
             id="password"
             type="password"

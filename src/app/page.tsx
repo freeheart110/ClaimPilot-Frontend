@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="flex flex-col justify-center items-center text-center min-h-[30vh] px-4 pt-16">
+      <section className="flex flex-col justify-center items-center text-center min-h-[27vh] px-4 pt-8">
         <h1 className="text-4xl font-bold mb-3">Welcome to ClaimPilot</h1>
         <p className="text-lg">Admin: email: admin@claimpilot.com; password: admin123</p>
         <p className="text-lg">Adjuster: email: adjuster@claimpilot.com; password: adjuster123</p>
@@ -30,19 +30,20 @@ export default function Home() {
       </section>
 
       {/* Policyholder Features */}
-      <section className="py-10">
+      <section className="py-10 bg-red-100 dark:bg-gray-900">
         <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-6">Policyhoder Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <FeatureCard icon={<FileText className="h-10 w-10 text-primary mb-2" />} title="Easy Claim Submission" description="File your claims quickly with our streamlined process." href="/submit-claim"/>
             <FeatureCard icon={<Activity className="h-10 w-10 text-primary mb-2" />} title="Real-time Tracking" description="Monitor the status of your claims in real-time." href="/track-claim"/>
-            <FeatureCard icon={<Upload className="h-10 w-10 text-primary mb-2" />} title="Secure Document Upload" description="Upload supporting documents securely and easily." />
-            <FeatureCard icon={<Headphones className="h-10 w-10 text-primary mb-2" />} title="24/7 Support" description="Get help anytime with our round-the-clock support." />
+            <FeatureCard icon={<Upload className="h-10 w-10 text-primary mb-2" />} title="Secure Document Upload" description="Upload supporting documents securely and easily." href="#"/>
+            <FeatureCard icon={<Headphones className="h-10 w-10 text-primary mb-2" />} title="24/7 Support" description="Get help anytime with our round-the-clock support." href="#"/>
           </div>
         </div>
       </section>
 
       {/* Admin Features */}
-      <section className="py-10 bg-gray-100 dark:bg-gray-900">
+      <section className="py-10 bg-blue-100 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-6">Admin Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -54,9 +55,9 @@ export default function Home() {
       </section>
 
       {/* Adjuster Features */}
-      <section className="py-10">
+      <section className="py-10 bg-teal-100">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-6">Tools for Adjusters</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Adjuster Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <FeatureCard icon={<CheckCircle className="h-10 w-10 text-primary mb-2" />} title="Assigned Claims" description="Access and manage claims assigned to you efficiently." href="/adjuster" />
             <FeatureCard icon={<Upload className="h-10 w-10 text-primary mb-2" />} title="Review Evidence" description="Review uploaded documents and make informed decisions." />
@@ -80,7 +81,7 @@ const FeatureCard = ({
   href?: string;
 }) => {
   const cardContent = (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-md transition w-full max-w-sm mx-auto hover:cursor-pointer">
+    <div className="min-h-[150px] bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-md transition w-full max-w-sm mx-auto hover:cursor-pointer">
       <div className="flex justify-center items-center gap-2 mb-2">
         <span className="text-primary">{icon}</span>
         <h3 className="text-base font-semibold text-foreground text-center">{title}</h3>

@@ -3,6 +3,7 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { useAuth } from '@/lib/authContext';
 
 interface NavBarProps {
   children?: ReactNode;
@@ -11,45 +12,10 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const prevScroll = useRef(0);
+  const { isLoggedIn, user, logout } = useAuth();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`, {
-          credentials: 'include',
-        });
-        if (res.status === 401) {
-          setIsLoggedIn(false); // not logged in
-        } else if (res.ok) {
-          setIsLoggedIn(true);
-        } else {
-          console.error('Unexpected auth response:', res.status);
-        }
-  
-      } catch (err) {
-        console.error('Network error checking session:', err);
-      }
-    };
-  
-    checkSession();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      setIsLoggedIn(false);
-      window.location.href = '/';
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,16 +51,21 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
 
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="text-sm text-gray-600 hover:text-red-600"
-            >
-              Logout
-            </button>
-          ) : (
             <>
-              <Link href="/login" className="bg-primary text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">Login</Link>
+              <span className="text-sm text-gray-600">
+                {user ? `${user.role}: ${user.firstName} ${user.lastName} (${user.email})` : 'User'}
+              </span>
+              <button
+                onClick={logout}
+                className="bg-primary text-sm  px-4 py-1.5 rounded text-white hover:text-red-600"
+              >
+                Logout
+              </button>
             </>
+          ) : (
+            <Link href="/login" className="bg-primary text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">
+              Login
+            </Link>
           )}
         </div>
 
@@ -113,9 +84,20 @@ const NavBar: React.FC<NavBarProps> = ({ children }) => {
             <Link href="/contact" onClick={toggleMobileMenu}>Contact</Link>
             <hr />
             {isLoggedIn ? (
-              <button onClick={() => { handleLogout(); toggleMobileMenu(); }} className="text-left text-sm text-red-600">
-                Logout
-              </button>
+              <>
+                <span className="text-sm text-gray-600">
+                  {user ? `${user.role}: ${user.firstName} ${user.lastName} (${user.email})` : 'User'}
+                </span>
+                <button
+                  onClick={() => {
+                    logout();
+                    toggleMobileMenu();
+                  }}
+                  className="text-left text-sm text-red-600"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <>
                 <Link href="/login" onClick={toggleMobileMenu}>Login</Link>
