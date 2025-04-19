@@ -145,7 +145,7 @@ interface ClaimRowProps {
 function ClaimRow({ claim, adjusters, onAssign }: ClaimRowProps) {
   const { register, handleSubmit } = useForm({
     resolver: zodResolver(assignSchema),
-    defaultValues: { adjusterId: claim.assignedAdjuster?.id || 0 },
+    defaultValues: { adjusterId: claim.assignedAdjuster?.id || 0},
   });
 
   const [mode, setMode] = useState<'none' | 'assignAdjuster'>('none');

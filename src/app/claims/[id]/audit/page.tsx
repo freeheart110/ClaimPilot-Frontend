@@ -60,7 +60,7 @@ export default function AuditTrailPage() {
         <thead>
           <tr className="text-left text-gray-600 dark:text-gray-300">
             <th className="p-3">Action</th>
-            <th className="p-3">Details</th>
+            <th className="p-3">Updated Details</th>
             <th className="p-3">User</th>
             <th className="p-3">Timestamp</th>
           </tr>

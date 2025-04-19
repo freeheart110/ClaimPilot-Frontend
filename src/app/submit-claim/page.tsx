@@ -88,7 +88,6 @@ export default function SubmitClaim() {
       console.log("Claim submitted successfully:", result);
       alert("Claim submitted successfully!");
   
-      // Optionally reset form or redirect
     } catch (error) {
       console.error("Submission error:", error);
       alert("Failed to submit claim.");
@@ -114,10 +113,10 @@ export default function SubmitClaim() {
               <FormField label="Last Name" error={errors.lastName?.message}>
                 <input {...register('lastName')} placeholder="Last Name" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
               </FormField>
-              <FormField label="Email (Optional)" error={errors.email?.message}>
+              <FormField label="Email" error={errors.email?.message}>
                 <input type="email" {...register('email')} placeholder="Email" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
               </FormField>
-              <FormField label="Phone (Optional)" error={errors.phone?.message}>
+              <FormField label="Phone" error={errors.phone?.message}>
                 <input {...register('phone')} placeholder="Phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
               </FormField>
               <div className="sm:col-span-2">

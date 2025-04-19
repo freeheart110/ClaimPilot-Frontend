@@ -69,8 +69,14 @@ const claimSchema = z.object({
   policeReportNumber: z.string().nullable().optional(),
   locationOfAccident: z.string().nullable().optional(),
   damageDescription: z.string().nullable().optional(),
-  estimatedRepairCost: z.number().min(0).nullable().optional(),
-  finalSettlementAmount: z.number().min(0).nullable().optional(),
+  estimatedRepairCost: z.preprocess(
+    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+    z.number().min(0).nullable()
+  ),
+  finalSettlementAmount: z.preprocess(
+    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+    z.number().min(0).nullable()
+  ),
 });
 
 type ClaimFormData = z.infer<typeof claimSchema>;
@@ -117,8 +123,8 @@ export default function ClaimDetailsPage() {
           policeReportNumber: data.policeReportNumber ?? undefined,
           locationOfAccident: data.locationOfAccident ?? undefined,
           damageDescription: data.damageDescription ?? undefined,
-          estimatedRepairCost: data.estimatedRepairCost ?? undefined,
-          finalSettlementAmount: data.finalSettlementAmount ?? undefined,
+          estimatedRepairCost: data.estimatedRepairCost !== null ? parseFloat(Number(data.estimatedRepairCost).toFixed(2)) : null,
+          finalSettlementAmount: data.finalSettlementAmount !== null ? parseFloat(Number(data.finalSettlementAmount).toFixed(2)) : null,
         });
       } catch (err) {
         setError((err as Error).message);
