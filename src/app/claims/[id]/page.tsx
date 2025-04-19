@@ -146,7 +146,7 @@ export default function ClaimDetailsPage() {
         estimatedRepairCost: data.estimatedRepairCost ?? null,
         finalSettlementAmount: data.finalSettlementAmount ?? null,
       };
-      const response = await fetch(`http://localhost:8080/api/claims/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/claims/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
